@@ -1,3 +1,19 @@
+# KQL:
+# // Needs to redesign to only return completed jobs
+# AzureDiagnostics 
+# | where ResourceProvider == "MICROSOFT.AUTOMATION"
+#     and Category == "JobStreams"
+#     //and ResultType == "Completed"  
+#     and StreamType_s == "Error" 
+# | project
+#     TimeGenerated,
+#     RunbookName_s,
+#     StreamType_s,
+#     _ResourceId,
+#     ResultDescription,
+#     JobId_g,
+#     ResultType
+
 # Ensures you do not inherit an AzContext in your runbook
 Disable-AzContextAutosave -Scope Process
 
