@@ -1,3 +1,8 @@
+# KQL for alerting:
+# AzureDiagnostics 
+# | where ResourceProvider == "MICROSOFT.AUTOMATION" and Category == "JobLogs" and (ResultType == "Failed" or ResultType == "Stopped" or ResultType == "Suspended") 
+# | project TimeGenerated , RunbookName_s , ResultType , _ResourceId , JobId_g
+
 Disable-AzContextAutosave -Scope Process
 
 Connect-AzAccount -Identity
