@@ -1,4 +1,4 @@
-# Ensures you do not inherit an AzContext in your runbook
+ Ensures you do not inherit an AzContext in your runbook
 Disable-AzContextAutosave -Scope Process
 
 Connect-AzAccount -Identity
@@ -15,7 +15,7 @@ foreach ($subscription in $subscriptions) {
     $resourceGroups = Get-AzResourceGroup
     foreach ($resourceGroup in $resourceGroups) {
         $delete = $false
-        if (-not $_.Tags.ContainsKey('WORKLOAD')) {
+        if ($_.Tags -eq $null -or (-not $_.Tags.ContainsKey('WORKLOAD'))) {
             Write-Output "WORKLOAD tag is missing on resource group $($resourceGroup.ResourceGroupName), marking it for deletion"
             $delete=$true
         } else {
