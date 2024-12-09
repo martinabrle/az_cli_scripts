@@ -1,6 +1,4 @@
-# System assigned / user assigned identity of the automation account needs to have a Global Reader to read
-# all subscriptions, even the newly created ones. Fo each subscription where this will delete resource groups,
-# workload identity will need "Contributor" on that subscription.
+# System assigned / user assigned identity of the automation account needs to have "Contributor" on all subscriptions
 
 # Ensures you do not inherit an AzContext in your runbook
 Disable-AzContextAutosave -Scope Process
@@ -48,32 +46,5 @@ function ShouldDeleteResourceGroup {
         # and the admin will be notified automatically
         Write-Error "Resource group $($resourceGroup.ResourceGroupName) is tagged as 'PRODUCTION' but does not have a 'DeleteWeekly' tag. Please review."
         return $false
-    }
-
-    $delete=$resourceGroup.Tags['DeleteWeekly']
-    if ($delete -eq $true) {
-        Write-Output "Even though it's a PRODUCTION workload, DeleteWeekly tag is set to $($delete) on resource group $($resourceGroup.ResourceGroupName), marking it for deletion"
-    } else {
-        Write-Output "DeleteWeekly tag is set to $($delete) on resource group $($resourceGroup.ResourceGroupName), skipping it"
-    }
-    return $delete
-}
-
-# Get all subscriptions
-$subscriptions = Get-AzSubscription
-
-# Iterate through each subscription
-foreach ($subscription in $subscriptions) {
-    Write-Output "Processing subscription: $($subscription.Name)"
-    # Set the current subscription context
-    Set-AzContext -SubscriptionId $subscription.Id
-
-    $resourceGroups = Get-AzResourceGroup
-    foreach ($resourceGroup in $resourceGroups) {
-        $delete = ShouldDeleteResourceGroup -resourceGroupName $resourceGroup.ResourceGroupName
-        if ($delete -eq $true) {
-            Write-Output "Deleting resource group: $($resourceGroup.ResourceGroupName)"
-            #Remove-AzResourceGroup -Name $resourceGroup.ResourceGroupName -Force
-        }
     }
 }
