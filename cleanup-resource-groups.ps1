@@ -1,4 +1,6 @@
-# System assigned / user assigned identity of the automation account needs to have "Contributor" on all subscriptions
+# System assigned / user assigned identity of the automation account needs to have a Global Reader to read
+# all subscriptions, even the newly created ones. Fo each subscription where this will delete resource groups,
+# workload identity will need "Contributor" on that subscription.
 
 # Ensures you do not inherit an AzContext in your runbook
 Disable-AzContextAutosave -Scope Process
@@ -71,7 +73,7 @@ foreach ($subscription in $subscriptions) {
         $delete = ShouldDeleteResourceGroup -resourceGroupName $resourceGroup.ResourceGroupName
         if ($delete -eq $true) {
             Write-Output "Deleting resource group: $($resourceGroup.ResourceGroupName)"
-            Remove-AzResourceGroup -Name $resourceGroup.ResourceGroupName -Force
+            #Remove-AzResourceGroup -Name $resourceGroup.ResourceGroupName -Force
         }
     }
 }
