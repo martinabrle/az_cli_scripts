@@ -23,4 +23,5 @@ foreach ($subscription in $subscriptions) {
         Write-Output "Stopped AKS cluster: $($aksCluster.Name) in resource group: $($aksCluster.ResourceGroupName)"
     }
 }
+
 Write-Output "All AKSes have been processed."
