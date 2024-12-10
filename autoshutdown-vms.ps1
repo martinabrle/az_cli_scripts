@@ -14,8 +14,8 @@ foreach ($subscription in $subscriptions) {
     # Set the current subscription context
     Set-AzContext -SubscriptionId $subscription.Id -TenantId $subscription.TenantId
 
-    # Get all running VMs with the tag 'PROD' set to 'false'
-    $vms = Get-AzVM -Status | Where-Object { $_.Tags['PROD'] -ne 'true' -and $_.PowerState -eq 'VM running' }
+    # Get all running VMs with the tag 'StopNightly' either missing or set to anything different from 'false'
+    $vms = Get-AzVM -Status | Where-Object { $_.Tags['StopNightly'] -ne 'false' -and $_.PowerState -eq 'VM running' }
 
     foreach ($vm in $vms) {
         # Deallocate the VM
