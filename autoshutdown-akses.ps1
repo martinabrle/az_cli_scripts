@@ -14,10 +14,10 @@ foreach ($subscription in $subscriptions) {
     # Set the current subscription context
     Set-AzContext -SubscriptionId $subscription.Id -TenantId $subscription.TenantId
 
-    # Get all running AKS clusters with a resource tag PROD = false in the current subscription
-    $aksClusters = Get-AzAksCluster | Where-Object {  $_.Tags['PROD'] -ne 'true' -and $_.PowerState.Code -eq 'Running' }
-
-   foreach ($aksCluster in $aksClusters) {
+    # Get all running AKS clusters with the tag 'StopNightly' either missing or set to anything different from 'false'
+    $aksClusters = Get-AzAksCluster | Where-Object { $_.Tags['StopNightly'] -ne 'false' -and $_.PowerState -eq 'VM running' }
+    
+    foreach ($aksCluster in $aksClusters) {
         # Stop the AKS cluster
         Stop-AzAksCluster -ResourceGroupName $aksCluster.ResourceGroupName -Name $aksCluster.Name
         Write-Output "Stopped AKS cluster: $($aksCluster.Name) in resource group: $($aksCluster.ResourceGroupName)"
